@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "8.0"
   s.source       = { :git => "https://github.com/iLiuChang/LCInfiniteScrollView.git", :tag => s.version }
   s.requires_arc = true
-  s.source_files = "LCInfiniteScrollView/**/*.{h,m}"
+  s.source_files = "LCInfiniteScrollView/*.{h,m}"
   s.framework    = "UIKit"
   s.requires_arc = true
 end
