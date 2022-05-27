@@ -21,14 +21,6 @@
 
 @implementation LCInfiniteScrollView
 
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.autoScrollTimeInterval = 2.5;
-    }
-    return self;
-}
-
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.scrollView.frame = self.bounds;
@@ -121,7 +113,7 @@
 
 - (void)addTimer {
     if (self.autoScrollTimeInterval <= 0) {
-        return;
+        self.autoScrollTimeInterval = 2.5;
     }
     if (self.timer && self.timer.timeInterval == self.autoScrollTimeInterval) {
         return;

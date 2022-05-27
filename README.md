@@ -58,4 +58,4 @@ v.autoScroll = YES;
 
 # License
 
-YYImage is provided under the MIT license. See LICENSE file for details.
+LCInfiniteScrollViewis provided under the MIT license. See LICENSE file for details.
