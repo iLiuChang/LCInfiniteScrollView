@@ -1,6 +1,6 @@
-//
 //  LCInfiniteScrollView.h
-//  LCInfiniteScrollViewDemo
+//
+//  LCInfiniteScrollView
 //
 //  Created by 刘畅 on 2021/1/14.
 //
@@ -16,39 +16,38 @@ NS_ASSUME_NONNULL_BEGIN
 @required
 
 /**
- 总数
+ The total number.
  */
 - (NSInteger)numberOfIndexInInfiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView;
 
 /**
- 设置图片
+ Set the reuse data.
  
- @param reusableView 设置图片(禁止修改frame和tag)
- @param index 所在下标
+ @param reusableView It is forbidden to modify the `frame` and `tag`, otherwise an error will occur.
+ @param index index
  */
 - (void)infiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView reusableView:(UIView *)reusableView atIndex:(NSInteger)index;
 
 @optional
 
-
 /**
- 重用视图(如果没有遵守此方法则为UIImageView)
+ Init reusable view. If no method is implemented, UIImageView is used by default.
 
- @return 1.不能为空 2.只能使用局部变量返回
+ @return reusable View
  */
 - (UIView *)reusableViewInInfiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView;
 
 /**
- 滑动事件
+ Scroll index
 
- @param index 滑动下标
+ @param index index
  */
 - (void)infiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView didScrollIndex:(NSInteger)index;
 
 /**
- 点击图片事件
+ Selected index.
 
- @param index 选中下标
+ @param index index
  */
 - (void)infiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView didSelectIndex:(NSInteger)index;
 
@@ -57,22 +56,31 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LCInfiniteScrollView : UIView
 
 /**
- 代理
+ Set delegate.
  */
 @property (nonatomic, weak) id<LCInfiniteScrollViewDelegate> delegate;
 
 /**
- 是否自动滑动, 默认NO
+ NSTimer  runloop mode
  */
-@property (nonatomic, assign) BOOL autoScroll;
+@property (nonatomic, copy, nullable) NSRunLoopMode timerRunLoopMode;
 
 /**
- 自动滑动时间间隔, 单位: 秒, 默认2.5秒
+ Auto scroll time interval, unit: second, default 2.5 seconds.
  */
 @property (nonatomic, assign) NSTimeInterval autoScrollTimeInterval;
 
 /**
- 刷新界面
+ Whether automatic scrolling is required, default NO.
+ 
+ If YES will create NSTimer, if NO will remove NSTimer.
+ */
+@property (nonatomic, assign) BOOL autoScroll;
+
+/**
+ Reload Data.
+ 
+ If the timer is enabled, the timer will be stopped when `numberOfIndexInInfiniteScrollView:` is less than or equal to 1.
  */
 - (void)reloadData;
 

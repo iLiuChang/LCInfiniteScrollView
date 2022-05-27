@@ -1,6 +1,6 @@
-//
 //  LCInfiniteScrollView.m
-//  LCInfiniteScrollViewDemo
+//
+//  LCInfiniteScrollView
 //
 //  Created by 刘畅 on 2021/1/14.
 //
@@ -128,7 +128,9 @@
     }
     [self removeTimer];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:self.autoScrollTimeInterval target:self selector:@selector(loopScroll) userInfo:nil repeats:YES];
-    [[NSRunLoop mainRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
+    if (self.timerRunLoopMode) {
+        [[NSRunLoop mainRunLoop] addTimer:self.timer forMode:self.timerRunLoopMode];
+    }
 }
 
 - (void)removeTimer {
@@ -184,7 +186,7 @@
     }
 }
 
-- (void)loopView {
+- (void)scrollNext {
     NSInteger totalCount = _totalCount;
     if (totalCount <= 0) {
         return;
@@ -234,7 +236,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self loopView];
+        [self scrollNext];
     });
 }
 

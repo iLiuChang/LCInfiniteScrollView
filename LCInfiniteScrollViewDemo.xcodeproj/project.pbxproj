@@ -83,8 +83,8 @@
 		DAD1F6F725B17FB800E9DF93 /* LCInfiniteScrollView */ = {
 			isa = PBXGroup;
 			children = (
-				DAD1F6F825B17FB800E9DF93 /* LCInfiniteScrollView.m */,
 				DAD1F6F925B17FB800E9DF93 /* LCInfiniteScrollView.h */,
+				DAD1F6F825B17FB800E9DF93 /* LCInfiniteScrollView.m */,
 			);
 			path = LCInfiniteScrollView;
 			sourceTree = SOURCE_ROOT;
