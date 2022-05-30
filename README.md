@@ -1,17 +1,19 @@
 # LCInfiniteScrollView
 An infinite scroll control implemented with two views, supporting custom reuse of views.
 
-# Requirements
+## Requirements
 
 - **iOS 8.0+**
 
-# Features
+> Programming in Swift? Try [LCCycleBanner](https://github.com/iLiuChang/LCCycleBanner) for a more conventional set of APIs.
+
+## Features
 
 - Supports infinite scrolling.
 - Reuse with two views.
 - Support for custom reuse views.
 
-# Usage
+## Usage
 
 ### Init
 
@@ -40,22 +42,23 @@ v.autoScroll = YES;
 }
 ```
 
-# Installation
+## Installation
 
 ### CocoaPods
 
-1. Update cocoapods to the latest version.
-2. Add `pod 'LCInfiniteScrollView'` to your Podfile.
-3. Run `pod install` or `pod update`.
-4. Import <LCInfiniteScrollView/LCInfiniteScrollView.h>.
+To integrate LCInfiniteScrollView into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+pod 'LCInfiniteScrollView'
+```
 
 ### Manually
 
-1. Download all the files in the YYImage subdirectory.
+1. Download all the files in the LCInfiniteScrollView subdirectory.
 2. Add the source files to your Xcode project.
 
 3. import `LCInfiniteScrollView.h`.
 
-# License
+## License
 
-LCInfiniteScrollViewis provided under the MIT license. See LICENSE file for details.
+LCInfiniteScrollView is provided under the MIT license. See LICENSE file for details.
