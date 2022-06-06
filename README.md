@@ -3,7 +3,7 @@ An infinite scroll control implemented with two views, supporting custom reuse o
 
 ## Requirements
 
--  **Objective-C**
+- **Objective-C**
 
   - **iOS 8.0+**
 
