@@ -1,6 +1,6 @@
 //  LCInfiniteScrollView.m
 //
-//  LCInfiniteScrollView
+//  LCInfiniteScrollView (https://github.com/iLiuChang/LCInfiniteScrollView)
 //
 //  Created by 刘畅 on 2021/1/14.
 //
@@ -133,7 +133,7 @@
 }
 
 - (void)reloadData {
-    NSInteger totalCount = [self.delegate numberOfIndexInInfiniteScrollView:self];
+    NSInteger totalCount = [self.delegate numberOfIndexesInInfiniteScrollView:self];
     _totalCount = totalCount;
     if (totalCount <= 1) {
         [self removeTimer];
@@ -154,11 +154,11 @@
         }
     }
     
-    if ([self.delegate respondsToSelector:@selector(infiniteScrollView:reusableView:atIndex:)]) {
+    if ([self.delegate respondsToSelector:@selector(infiniteScrollView:displayReusableView:atIndex:)]) {
         if (!_centerView.superview) {
             [_scrollView addSubview:_centerView];
         }
-        [self.delegate infiniteScrollView:self reusableView:_centerView atIndex:_centerView.tag];
+        [self.delegate infiniteScrollView:self displayReusableView:_centerView atIndex:_centerView.tag];
     }
 }
 
@@ -201,7 +201,7 @@
     _reusableView.frame = CGRectMake(rx, 0, w, self.scrollView.frame.size.height);
     _reusableView.tag = index;
     if (_reusableIndex != index) {
-        [self.delegate infiniteScrollView:self reusableView:_reusableView atIndex:index];
+        [self.delegate infiniteScrollView:self displayReusableView:_reusableView atIndex:index];
     }
     _reusableIndex = index;
 

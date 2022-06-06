@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		587E70DA284DB09B00A6529F /* LCInfiniteScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 587E70D8284DB09B00A6529F /* LCInfiniteScrollView.m */; };
 		DA52AF4F25B02FA70070F1DA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DA52AF4E25B02FA70070F1DA /* AppDelegate.m */; };
 		DA52AF5225B02FA70070F1DA /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DA52AF5125B02FA70070F1DA /* SceneDelegate.m */; };
 		DA52AF5525B02FA70070F1DA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA52AF5425B02FA70070F1DA /* ViewController.m */; };
@@ -14,10 +15,11 @@
 		DA52AF5A25B02FA80070F1DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA52AF5925B02FA80070F1DA /* Assets.xcassets */; };
 		DA52AF5D25B02FA80070F1DA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA52AF5B25B02FA80070F1DA /* LaunchScreen.storyboard */; };
 		DA52AF6025B02FA80070F1DA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DA52AF5F25B02FA80070F1DA /* main.m */; };
-		DAD1F6FA25B17FB800E9DF93 /* LCInfiniteScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD1F6F825B17FB800E9DF93 /* LCInfiniteScrollView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		587E70D8284DB09B00A6529F /* LCInfiniteScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LCInfiniteScrollView.m; sourceTree = "<group>"; };
+		587E70D9284DB09B00A6529F /* LCInfiniteScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCInfiniteScrollView.h; sourceTree = "<group>"; };
 		DA52AF4A25B02FA70070F1DA /* LCInfiniteScrollViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LCInfiniteScrollViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA52AF4D25B02FA70070F1DA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		DA52AF4E25B02FA70070F1DA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -30,8 +32,6 @@
 		DA52AF5C25B02FA80070F1DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DA52AF5E25B02FA80070F1DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA52AF5F25B02FA80070F1DA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		DAD1F6F825B17FB800E9DF93 /* LCInfiniteScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LCInfiniteScrollView.m; sourceTree = "<group>"; };
-		DAD1F6F925B17FB800E9DF93 /* LCInfiniteScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCInfiniteScrollView.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +45,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		587E70D7284DB09B00A6529F /* LCInfiniteScrollView */ = {
+			isa = PBXGroup;
+			children = (
+				587E70D9284DB09B00A6529F /* LCInfiniteScrollView.h */,
+				587E70D8284DB09B00A6529F /* LCInfiniteScrollView.m */,
+			);
+			name = LCInfiniteScrollView;
+			path = ../../LCInfiniteScrollView;
+			sourceTree = "<group>";
+		};
 		DA52AF4125B02FA70070F1DA = {
 			isa = PBXGroup;
 			children = (
@@ -64,7 +74,7 @@
 		DA52AF4C25B02FA70070F1DA /* LCInfiniteScrollViewDemo */ = {
 			isa = PBXGroup;
 			children = (
-				DAD1F6F725B17FB800E9DF93 /* LCInfiniteScrollView */,
+				587E70D7284DB09B00A6529F /* LCInfiniteScrollView */,
 				DA52AF4D25B02FA70070F1DA /* AppDelegate.h */,
 				DA52AF4E25B02FA70070F1DA /* AppDelegate.m */,
 				DA52AF5025B02FA70070F1DA /* SceneDelegate.h */,
@@ -79,15 +89,6 @@
 			);
 			path = LCInfiniteScrollViewDemo;
 			sourceTree = "<group>";
-		};
-		DAD1F6F725B17FB800E9DF93 /* LCInfiniteScrollView */ = {
-			isa = PBXGroup;
-			children = (
-				DAD1F6F925B17FB800E9DF93 /* LCInfiniteScrollView.h */,
-				DAD1F6F825B17FB800E9DF93 /* LCInfiniteScrollView.m */,
-			);
-			path = LCInfiniteScrollView;
-			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -161,7 +162,7 @@
 				DA52AF5525B02FA70070F1DA /* ViewController.m in Sources */,
 				DA52AF4F25B02FA70070F1DA /* AppDelegate.m in Sources */,
 				DA52AF6025B02FA80070F1DA /* main.m in Sources */,
-				DAD1F6FA25B17FB800E9DF93 /* LCInfiniteScrollView.m in Sources */,
+				587E70DA284DB09B00A6529F /* LCInfiniteScrollView.m in Sources */,
 				DA52AF5225B02FA70070F1DA /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -3,9 +3,12 @@ An infinite scroll control implemented with two views, supporting custom reuse o
 
 ## Requirements
 
-- **iOS 8.0+**
+-  **Objective-C**
+  - **iOS 8.0+**
 
-> Programming in Swift? Try [LCCycleBanner](https://github.com/iLiuChang/LCCycleBanner) for a more conventional set of APIs.
+- **Swift**
+  - **iOS 9.0+**
+  - **Swift 4.0+**
 
 ## Features
 
@@ -17,6 +20,8 @@ An infinite scroll control implemented with two views, supporting custom reuse o
 
 ### Init
 
+- **Objective-C**
+
 ```objective-c
 LCInfiniteScrollView *v = [[LCInfiniteScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 300)];
 v.backgroundColor = UIColor.brownColor;
@@ -25,7 +30,18 @@ v.autoScroll = YES;
 [self.view addSubview:v];
 ```
 
+- **Swift**
+
+```swift
+let banner = LCInfiniteScrollView(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 200))
+banner.delegate = self
+banner.autoScroll = true
+self.view.addSubview(banner)
+```
+
 ### Custom reuse view
+
+- **Objective-C**
 
 ```objective-c
 - (UIView *)reusableViewInInfiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView {
@@ -35,10 +51,22 @@ v.autoScroll = YES;
     return label;
 }
 
-- (void)infiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView reusableView:(UIView *)reusableView atIndex:(NSInteger)index {
+- (void)infiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView displayReusableView:(UIView *)reusableView atIndex:(NSInteger)index {
     UILabel *label = (UILabel *)reusableView;
     label.text = @(index).stringValue;
     label.backgroundColor = (UIColor *)self.colors[index];
+}
+```
+
+- **Swift**
+
+```swift
+func infiniteScrollView(_ infiniteScrollView: LCInfiniteScrollView, displayReusableView view: UIView, forIndex index: Int) {
+    view.backgroundColor = colors[index]
+}
+
+func reusableView(in infiniteScrollView: LCInfiniteScrollView) -> UIView {
+    return UIView()
 }
 ```
 
@@ -48,16 +76,30 @@ v.autoScroll = YES;
 
 To integrate LCInfiniteScrollView into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
+- **Objective-C**
+
 ```ruby
 pod 'LCInfiniteScrollView'
 ```
 
-### Manually
+- **Swift**
 
-1. Download all the files in the LCInfiniteScrollView subdirectory.
-2. Add the source files to your Xcode project.
+```ruby
+pod 'SwiftInfiniteScrollView'
+```
 
+### Manual
+
+- **Objective-C**
+
+1. Download everything in the LCInfiniteScrollView folder;
+2. Add (drag and drop) the source files in LCInfiniteScrollView to your project.
 3. import `LCInfiniteScrollView.h`.
+
+- **Swift**
+
+1. Download everything in the LCInfiniteScrollView folder;
+2. Add (drag and drop) the source files in SwiftInfiniteScrollView to your project.
 
 ## License
 

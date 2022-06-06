@@ -1,6 +1,6 @@
 //  LCInfiniteScrollView.h
 //
-//  LCInfiniteScrollView
+//  LCInfiniteScrollView (https://github.com/iLiuChang/LCInfiniteScrollView)
 //
 //  Created by 刘畅 on 2021/1/14.
 //
@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  The total number.
  */
-- (NSInteger)numberOfIndexInInfiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView;
+- (NSInteger)numberOfIndexesInInfiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView;
 
 /**
  Set the reuse data.
@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param reusableView It is forbidden to modify the `frame` and `tag`, otherwise an error will occur.
  @param index index
  */
-- (void)infiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView reusableView:(UIView *)reusableView atIndex:(NSInteger)index;
+- (void)infiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView displayReusableView:(UIView *)reusableView atIndex:(NSInteger)index;
 
 @optional
 

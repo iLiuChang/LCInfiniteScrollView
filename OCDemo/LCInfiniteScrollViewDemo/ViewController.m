@@ -67,11 +67,11 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
 
 }
-- (NSInteger)numberOfIndexInInfiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView {
+- (NSInteger)numberOfIndexesInInfiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView {
     return self.colors.count;
 }
 
-- (void)infiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView reusableView:(UIView *)reusableView atIndex:(NSInteger)index {
+- (void)infiniteScrollView:(LCInfiniteScrollView *)infiniteScrollView displayReusableView:(UIView *)reusableView atIndex:(NSInteger)index {
     UILabel *label = (UILabel *)reusableView;
     label.text = @(index).stringValue;
     label.backgroundColor = (UIColor *)self.colors[index];
