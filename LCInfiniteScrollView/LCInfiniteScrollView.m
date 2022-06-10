@@ -84,7 +84,6 @@
         _scrollView.delegate = self;
         [self addSubview:_scrollView];
         _centerView.tag = 0;
-        [_scrollView addSubview:_centerView];
     }
 }
 
