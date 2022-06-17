@@ -1,6 +1,8 @@
 # LCInfiniteScrollView
 An infinite scroll control implemented with two views, supporting custom reuse of views.
 
+![infinite-scroll](https://raw.githubusercontent.com/iLiuChang/LCInfiniteScrollView/main/Images/infinite.gif)
+
 ## Requirements
 
 - **Objective-C**
