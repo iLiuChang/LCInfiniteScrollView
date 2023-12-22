@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SwiftInfiniteScrollView"
-  s.version      = "1.1.0"
+  s.version      = "1.1.2"
   s.summary      = "An infinite scroll control implemented with two views."
   s.homepage     = "https://github.com/iLiuChang/LCInfiniteScrollView"
   s.license      = "MIT"

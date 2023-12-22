@@ -27,13 +27,7 @@ open class LCInfiniteScrollView: UIView {
     open var timerRunLoopMode: RunLoop.Mode?
     
     /// Auto scroll time interval, unit: second.
-    open var autoScrollTimeInterval: TimeInterval = 2.5 {
-        didSet {
-            removeTimer()
-            addTimer()
-        }
-    }
-
+    open var autoScrollTimeInterval: TimeInterval = 2.5
     /// Whether automatic scrolling is required, default `false`. If `true` will create `Timer`, if `false` will remove `Timer`.
     open var autoScroll: Bool = false {
         didSet {
@@ -74,16 +68,16 @@ open class LCInfiniteScrollView: UIView {
         scrollView.isScrollEnabled = totalCount > 1
         if (totalCount <= 0) {
             centerView.removeFromSuperview()
-            return;
+            return
         }
 
         if (centerView.tag >= totalCount) {
-            self.reusableView?.tag = 0;
-            self.centerView?.tag = 0;
+            self.reusableView?.tag = 0
+            self.centerView?.tag = 0
             delegate.infiniteScrollView?(self, didScrollAt: centerView.tag)
         }
         
-        if (centerView.superview != nil) {
+        if (centerView.superview == nil) {
             scrollView.addSubview(centerView)
         }
         delegate.infiniteScrollView(self, displayReusableView: centerView, forIndex: centerView.tag)
@@ -96,7 +90,7 @@ open class LCInfiniteScrollView: UIView {
         scrollView?.frame = self.bounds
         centerView?.frame = CGRect(x: W, y: 0, width: W, height: H)
         scrollView?.contentSize = CGSize(width: W * 3.0, height: 0)
-        scrollView?.contentOffset.x = W
+        scrollView?.setContentOffset(CGPoint(x: W, y: 0), animated: false)
     }
 
     open override func willMove(toSuperview newSuperview: UIView?) {
@@ -143,8 +137,8 @@ private extension LCInfiniteScrollView {
         if (self.scrollView != nil) {
             self.scrollView!.removeFromSuperview()
         }
-        self.scrollIndex = -1;
-        self.reusableIndex = -1;
+        self.scrollIndex = -1
+        self.reusableIndex = -1
         
         let centerView = delegate.reusableView(in: self)
         let reusableView = delegate.reusableView(in: self)
@@ -162,8 +156,8 @@ private extension LCInfiniteScrollView {
         }
 
         let scrollView = UIScrollView(frame: self.bounds)
-        scrollView.isPagingEnabled = true;
-        scrollView.showsHorizontalScrollIndicator = false;
+        scrollView.isPagingEnabled = true
+        scrollView.showsHorizontalScrollIndicator = false
         scrollView.delegate = self
         self.addSubview(scrollView)
         scrollView.addSubview(centerView)
@@ -266,11 +260,15 @@ extension LCInfiniteScrollView: UIScrollViewDelegate {
     }
 
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        self.addTimer()
+        if autoScroll {
+            self.addTimer()
+        }
     }
     
     public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        self.addTimer()
+        if autoScroll {
+            self.addTimer()
+        }
     }
 }
 
