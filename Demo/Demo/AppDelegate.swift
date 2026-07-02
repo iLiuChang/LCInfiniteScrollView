@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  SwiftInfiniteScrollView
+//  Demo
 //
-//  Created by 刘畅 on 2022/6/6.
+//  Created by LC on 2026/7/1.
 //
 
 import UIKit
