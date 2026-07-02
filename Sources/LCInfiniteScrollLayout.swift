@@ -45,19 +45,14 @@ open class LCInfiniteScrollLayout: UICollectionViewLayout {
         
         self.itemInteritemSize = (self.scrollDirection == .horizontal ? self.collectionViewSize.width : self.collectionViewSize.height) + self.interitemSpacing
         
-        self.contentSize = {
-            let totalItems = self.numberOfItems * self.numberOfSections
-            switch self.scrollDirection {
-                case .horizontal:
-                    var width: CGFloat = CGFloat(totalItems - 1) * self.interitemSpacing
-                    width += CGFloat(totalItems) * self.collectionViewSize.width
-                    return CGSize(width: width, height: collectionView.frame.height)
-                case .vertical:
-                    var height: CGFloat = CGFloat(totalItems - 1) * self.interitemSpacing
-                    height += CGFloat(totalItems) * self.collectionViewSize.height
-                    return CGSize(width: collectionView.frame.width, height: height)
-            }
-        }()
+        let totalItems = self.numberOfItems * self.numberOfSections
+        let contentLength = CGFloat(totalItems) * self.itemInteritemSize - self.interitemSpacing
+        switch self.scrollDirection {
+        case .horizontal:
+            self.contentSize = CGSize(width: contentLength, height: self.collectionViewSize.height)
+        case .vertical:
+            self.contentSize = CGSize(width: self.collectionViewSize.width, height: contentLength)
+        }
         
         let currentIndex = dataSource?.currentIndex(in: self) ?? 0
         let newIndexPath = IndexPath(item: currentIndex, section: self.numberOfSections / 2)
@@ -99,7 +94,6 @@ open class LCInfiniteScrollLayout: UICollectionViewLayout {
     
     override open func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-        attributes.indexPath = indexPath
         let frame = self.frame(for: indexPath)
         attributes.center = CGPoint(x: frame.midX, y: frame.midY)
         attributes.size = self.collectionViewSize
@@ -125,12 +119,7 @@ open class LCInfiniteScrollLayout: UICollectionViewLayout {
     @objc(contentOffsetForIndexPath:)
     open func contentOffset(for indexPath: IndexPath) -> CGPoint {
         let origin = self.frame(for: indexPath).origin
-        switch self.scrollDirection {
-        case .horizontal:
-            return CGPoint(x: origin.x, y: 0)
-        case .vertical:
-            return CGPoint(x: 0, y: origin.y)
-        }
+        return self.scrollDirection == .horizontal ? CGPoint(x: origin.x, y: 0) : CGPoint(x: 0, y: origin.y)
     }
     
     @objc(frameForIndexPath:)

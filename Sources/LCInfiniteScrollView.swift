@@ -84,9 +84,8 @@ open class LCInfiniteScrollView: UIView {
     @objc open var disableInfiniteScrollForSingleItem: Bool = false
     
     @objc open var scrollOffset: CGFloat {
-        let contentOffset = max(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y)
-        let scrollOffset = Double(contentOffset/collectionViewLayout.itemInteritemSize)
-        return fmod(CGFloat(scrollOffset), CGFloat(self.numberOfItems))
+        let contentOffset = self.scrollDirection == .horizontal ? self.collectionView.contentOffset.x : self.collectionView.contentOffset.y
+        return fmod(contentOffset / collectionViewLayout.itemInteritemSize, CGFloat(self.numberOfItems))
     }
     
     @objc open var panGestureRecognizer: UIPanGestureRecognizer {
