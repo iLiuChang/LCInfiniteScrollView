@@ -102,19 +102,24 @@ open class LCInfiniteScrollLayout: UICollectionViewLayout {
     }
     
     override open func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
-        guard let collectionView = self.collectionView, self.itemInteritemSize > 0 else {
+        guard let collectionView = self.collectionView else {
             return proposedContentOffset
         }
-        var proposedContentOffset = proposedContentOffset
-        let contentLength = self.scrollDirection == .horizontal ? collectionView.contentSize.width : collectionView.contentSize.height
-        let boundedOffset = max(0, contentLength - self.itemInteritemSize)
-        switch self.scrollDirection {
-        case .horizontal:
-            proposedContentOffset.x = min(boundedOffset, max(0, round(proposedContentOffset.x / self.itemInteritemSize) * self.itemInteritemSize))
-        case .vertical:
-            proposedContentOffset.y = min(boundedOffset, max(0, round(proposedContentOffset.y / self.itemInteritemSize) * self.itemInteritemSize))
+        let isHorizontal = self.scrollDirection == .horizontal
+        let v = isHorizontal ? velocity.x : velocity.y
+        let currentOffset = isHorizontal ? collectionView.contentOffset.x : collectionView.contentOffset.y
+        let proposedOffset = isHorizontal ? proposedContentOffset.x : proposedContentOffset.y
+        let boundedOffset = (isHorizontal ? collectionView.contentSize.width : collectionView.contentSize.height) - self.itemInteritemSize
+        var targetOffset: CGFloat
+        switch v {
+        case 0.3...: targetOffset = ceil(currentOffset / self.itemInteritemSize) * self.itemInteritemSize
+        case ..<(-0.3): targetOffset = floor(currentOffset / self.itemInteritemSize) * self.itemInteritemSize
+        default: targetOffset = round(proposedOffset / self.itemInteritemSize) * self.itemInteritemSize
         }
-        return proposedContentOffset
+        targetOffset = min(max(0, targetOffset), boundedOffset)
+        return isHorizontal
+            ? CGPoint(x: targetOffset, y: proposedContentOffset.y)
+            : CGPoint(x: proposedContentOffset.x, y: targetOffset)
     }
     
     @objc(contentOffsetForIndexPath:)

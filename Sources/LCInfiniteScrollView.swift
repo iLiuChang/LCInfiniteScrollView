@@ -253,23 +253,16 @@ open class LCInfiniteScrollView: UIView {
         guard self.numberOfItems > 0, self.collectionView.contentSize != .zero else {
             return IndexPath(item: 0, section: 0)
         }
-        let sortedIndexPaths = self.collectionView.indexPathsForVisibleItems.sorted { (l, r) -> Bool in
-            let leftFrame = self.collectionViewLayout.frame(for: l)
-            let rightFrame = self.collectionViewLayout.frame(for: r)
-            var leftCenter: CGFloat,rightCenter: CGFloat,ruler: CGFloat
-            switch self.scrollDirection {
-            case .horizontal:
-                leftCenter = leftFrame.midX
-                rightCenter = rightFrame.midX
-                ruler = self.collectionView.bounds.midX
-            case .vertical:
-                leftCenter = leftFrame.midY
-                rightCenter = rightFrame.midY
-                ruler = self.collectionView.bounds.midY
-            }
-            return abs(ruler-leftCenter) < abs(ruler-rightCenter)
+        let isHorizontal = self.scrollDirection == .horizontal
+        let ruler = isHorizontal ? self.collectionView.bounds.midX : self.collectionView.bounds.midY
+        let nearest = self.collectionView.indexPathsForVisibleItems.min { l, r in
+            let lCenter = self.collectionViewLayout.frame(for: l)
+            let rCenter = self.collectionViewLayout.frame(for: r)
+            let ld = abs(ruler - (isHorizontal ? lCenter.midX : lCenter.midY))
+            let rd = abs(ruler - (isHorizontal ? rCenter.midX : rCenter.midY))
+            return ld < rd
         }
-        return sortedIndexPaths.first ?? IndexPath(item: 0, section: 0)
+        return nearest ?? IndexPath(item: 0, section: 0)
     }
 }
 
