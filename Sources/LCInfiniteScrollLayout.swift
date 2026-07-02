@@ -107,35 +107,17 @@ open class LCInfiniteScrollLayout: UICollectionViewLayout {
     }
     
     override open func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
-        guard let collectionView = self.collectionView else {
+        guard let collectionView = self.collectionView, self.itemInteritemSize > 0 else {
             return proposedContentOffset
         }
         var proposedContentOffset = proposedContentOffset
-        let v = self.scrollDirection == .horizontal ? velocity.x : velocity.y
-        let currentOffset = self.scrollDirection == .horizontal ? collectionView.contentOffset.x : collectionView.contentOffset.y
         let contentLength = self.scrollDirection == .horizontal ? collectionView.contentSize.width : collectionView.contentSize.height
-        
-        func calculateTargetOffset(by proposedOffset: CGFloat) -> CGFloat {
-            var targetOffset: CGFloat
-            switch v {
-            case 0.3 ... CGFloat.greatestFiniteMagnitude:
-                targetOffset = ceil(currentOffset / self.itemInteritemSize) * self.itemInteritemSize
-            case -CGFloat.greatestFiniteMagnitude ... -0.3:
-                targetOffset = floor(currentOffset / self.itemInteritemSize) * self.itemInteritemSize
-            default:
-                targetOffset = round(proposedOffset / self.itemInteritemSize) * self.itemInteritemSize
-            }
-            let boundedOffset = contentLength - self.itemInteritemSize
-            targetOffset = max(0, targetOffset)
-            targetOffset = min(boundedOffset, targetOffset)
-            return targetOffset
-        }
-        
+        let boundedOffset = max(0, contentLength - self.itemInteritemSize)
         switch self.scrollDirection {
         case .horizontal:
-            proposedContentOffset.x = calculateTargetOffset(by: proposedContentOffset.x)
+            proposedContentOffset.x = min(boundedOffset, max(0, round(proposedContentOffset.x / self.itemInteritemSize) * self.itemInteritemSize))
         case .vertical:
-            proposedContentOffset.y = calculateTargetOffset(by: proposedContentOffset.y)
+            proposedContentOffset.y = min(boundedOffset, max(0, round(proposedContentOffset.y / self.itemInteritemSize) * self.itemInteritemSize))
         }
         return proposedContentOffset
     }
