@@ -253,6 +253,11 @@ open class LCInfiniteScrollView: UIView {
         guard self.numberOfItems > 0, self.collectionView.contentSize != .zero else {
             return IndexPath(item: 0, section: 0)
         }
+        
+        if self.collectionView.indexPathsForVisibleItems.count == 1 {
+            return self.collectionView.indexPathsForVisibleItems[0]
+        }
+        
         let isHorizontal = self.scrollDirection == .horizontal
         let ruler = isHorizontal ? self.collectionView.bounds.midX : self.collectionView.bounds.midY
         let nearest = self.collectionView.indexPathsForVisibleItems.min { l, r in
