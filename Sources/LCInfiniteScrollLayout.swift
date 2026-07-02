@@ -23,6 +23,7 @@ open class LCInfiniteScrollLayout: UICollectionViewLayout {
     @objc open weak var dataSource: LCInfiniteScrollLayoutDataSource?
     @objc open var scrollDirection: ScrollDirection = .horizontal
     @objc open var interitemSpacing: CGFloat = 0
+    /// (horizontal: width or vertical: height) + interitemSpacing
     @objc public private(set) var itemInteritemSize: CGFloat = 0
     
     private var collectionViewSize: CGSize = .zero

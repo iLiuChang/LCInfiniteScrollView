@@ -100,29 +100,6 @@ open class LCInfiniteScrollView: UIView {
     private var numberOfItems: Int = 0
     private var numberOfSections: Int = 0
     private var dequeingSection = 0
-    private var centermostIndexPath: IndexPath {
-        guard self.numberOfItems > 0, self.collectionView.contentSize != .zero else {
-            return IndexPath(item: 0, section: 0)
-        }
-        let sortedIndexPaths = self.collectionView.indexPathsForVisibleItems.sorted { (l, r) -> Bool in
-            let leftFrame = self.collectionViewLayout.frame(for: l)
-            let rightFrame = self.collectionViewLayout.frame(for: r)
-            var leftCenter: CGFloat,rightCenter: CGFloat,ruler: CGFloat
-            switch self.scrollDirection {
-            case .horizontal:
-                leftCenter = leftFrame.midX
-                rightCenter = rightFrame.midX
-                ruler = self.collectionView.bounds.midX
-            case .vertical:
-                leftCenter = leftFrame.midY
-                rightCenter = rightFrame.midY
-                ruler = self.collectionView.bounds.midY
-            }
-            return abs(ruler-leftCenter) < abs(ruler-rightCenter)
-        }
-        return sortedIndexPaths.first ?? IndexPath(item: 0, section: 0)
-    }
-    private var possibleTargetingIndexPath: IndexPath?
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -181,15 +158,7 @@ open class LCInfiniteScrollView: UIView {
     open func scrollToItem(at index: Int, animated: Bool) {
         guard self.numberOfItems > 0, index >= 0 else { return }
         let index = min(index, self.numberOfItems - 1)
-        let indexPath = { () -> IndexPath in
-            if let indexPath = self.possibleTargetingIndexPath, indexPath.item == index {
-                defer {
-                    self.possibleTargetingIndexPath = nil
-                }
-                return indexPath
-            }
-            return self.numberOfSections > 1 ? self.nearbyIndexPath(for: index) : IndexPath(item: index, section: 0)
-        }()
+        let indexPath = self.numberOfSections > 1 ? self.nearbyIndexPath(for: index) : IndexPath(item: index, section: 0)
         let contentOffset = self.collectionViewLayout.contentOffset(for: indexPath)
         self.collectionView.setContentOffset(contentOffset, animated: animated)
     }
@@ -280,6 +249,28 @@ open class LCInfiniteScrollView: UIView {
         }
     }
     
+    private var centermostIndexPath: IndexPath {
+        guard self.numberOfItems > 0, self.collectionView.contentSize != .zero else {
+            return IndexPath(item: 0, section: 0)
+        }
+        let sortedIndexPaths = self.collectionView.indexPathsForVisibleItems.sorted { (l, r) -> Bool in
+            let leftFrame = self.collectionViewLayout.frame(for: l)
+            let rightFrame = self.collectionViewLayout.frame(for: r)
+            var leftCenter: CGFloat,rightCenter: CGFloat,ruler: CGFloat
+            switch self.scrollDirection {
+            case .horizontal:
+                leftCenter = leftFrame.midX
+                rightCenter = rightFrame.midX
+                ruler = self.collectionView.bounds.midX
+            case .vertical:
+                leftCenter = leftFrame.midY
+                rightCenter = rightFrame.midY
+                ruler = self.collectionView.bounds.midY
+            }
+            return abs(ruler-leftCenter) < abs(ruler-rightCenter)
+        }
+        return sortedIndexPaths.first ?? IndexPath(item: 0, section: 0)
+    }
 }
 
 extension LCInfiniteScrollView: LCInfiniteScrollLayoutDataSource {
@@ -314,55 +305,27 @@ extension LCInfiniteScrollView: UICollectionViewDataSource,UICollectionViewDeleg
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        guard let function = self.delegate?.infiniteScrollView(_:shouldHighlightItemAt:) else {
-            return true
-        }
-        let index = indexPath.item % self.numberOfItems
-        return function(self,index)
+        self.delegate?.infiniteScrollView?(self, shouldHighlightItemAt: indexPath.item % self.numberOfItems) ?? true
     }
     
     public func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
-        guard let function = self.delegate?.infiniteScrollView(_:didHighlightItemAt:) else {
-            return
-        }
-        let index = indexPath.item % self.numberOfItems
-        function(self,index)
+        self.delegate?.infiniteScrollView?(self, didHighlightItemAt: indexPath.item % self.numberOfItems)
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        guard let function = self.delegate?.infiniteScrollView(_:shouldSelectItemAt:) else {
-            return true
-        }
-        let index = indexPath.item % self.numberOfItems
-        return function(self,index)
+        self.delegate?.infiniteScrollView?(self, shouldSelectItemAt: indexPath.item % self.numberOfItems) ?? true
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let function = self.delegate?.infiniteScrollView(_:didSelectItemAt:) else {
-            return
-        }
-        self.possibleTargetingIndexPath = indexPath
-        defer {
-            self.possibleTargetingIndexPath = nil
-        }
-        let index = indexPath.item % self.numberOfItems
-        function(self,index)
+        self.delegate?.infiniteScrollView?(self, didSelectItemAt: indexPath.item % self.numberOfItems)
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let function = self.delegate?.infiniteScrollView(_:willDisplay:forItemAt:) else {
-            return
-        }
-        let index = indexPath.item % self.numberOfItems
-        function(self,cell,index)
+        self.delegate?.infiniteScrollView?(self, willDisplay: cell, forItemAt: indexPath.item % self.numberOfItems)
     }
     
     public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let function = self.delegate?.infiniteScrollView(_:didEndDisplaying:forItemAt:) else {
-            return
-        }
-        let index = indexPath.item % self.numberOfItems
-        function(self,cell,index)
+        self.delegate?.infiniteScrollView?(self, didEndDisplaying: cell, forItemAt: indexPath.item % self.numberOfItems)
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -372,16 +335,11 @@ extension LCInfiniteScrollView: UICollectionViewDataSource,UICollectionViewDeleg
                 self.currentIndex = currentIndex
             }
         }
-        guard let function = self.delegate?.infiniteScrollViewDidScroll else {
-            return
-        }
-        function(self)
+        self.delegate?.infiniteScrollViewDidScroll?(self)
     }
     
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        if let function = self.delegate?.infiniteScrollViewWillBeginDragging(_:) {
-            function(self)
-        }
+        self.delegate?.infiniteScrollViewWillBeginDragging?(self)
         if self.autoScrollTimeInterval > 0 {
             self.cancelTimer()
         }
@@ -399,20 +357,16 @@ extension LCInfiniteScrollView: UICollectionViewDataSource,UICollectionViewDeleg
     }
     
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if let function = self.delegate?.infiniteScrollViewDidEndDecelerating {
-            function(self)
-        }
+        self.delegate?.infiniteScrollViewDidEndDecelerating?(self)
     }
     
     public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         if collectionViewLayout.itemInteritemSize > 0 {
-            adjustContentOffset()
+            adjustContentOffsetIfNeeded()
         }
-        if let function = self.delegate?.infiniteScrollViewDidEndScrollAnimation {
-            function(self)
-        }
+        self.delegate?.infiniteScrollViewDidEndScrollAnimation?(self)
         
-        func adjustContentOffset() {
+        func adjustContentOffsetIfNeeded() {
             if scrollDirection == .horizontal {
                 let adjustedContentOffsetX = round(scrollView.contentOffset.x / collectionViewLayout.itemInteritemSize) * collectionViewLayout.itemInteritemSize
                 if adjustedContentOffsetX != round(scrollView.contentOffset.x) {
