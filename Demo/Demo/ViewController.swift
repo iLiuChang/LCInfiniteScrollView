@@ -50,7 +50,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Infinite Scroll Demo"
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .lightGray
         setupUI()
     }
 

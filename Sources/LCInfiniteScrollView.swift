@@ -121,11 +121,7 @@ open class LCInfiniteScrollView: UIView {
             }
             return abs(ruler-leftCenter) < abs(ruler-rightCenter)
         }
-        let indexPath = sortedIndexPaths.first
-        if let indexPath = indexPath {
-            return indexPath
-        }
-        return IndexPath(item: 0, section: 0)
+        return sortedIndexPaths.first ?? IndexPath(item: 0, section: 0)
     }
     private var possibleTargetingIndexPath: IndexPath?
     
