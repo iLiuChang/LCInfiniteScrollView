@@ -11,10 +11,10 @@ class ViewController: UIViewController {
 
     // MARK: - Properties
 
-    private let horizontalColors: [UIColor] = [
+    private var horizontalColors: [UIColor] = [
         .systemRed, .systemBlue, .systemGreen, .systemOrange, .systemPurple
     ]
-    private let verticalColors: [UIColor] = [
+    private var verticalColors: [UIColor] = [
         .systemTeal, .systemPink, .systemYellow, .systemIndigo, .systemMint
     ]
 
@@ -90,7 +90,22 @@ class ViewController: UIViewController {
         vStack.axis = .vertical
         vStack.spacing = 8
 
-        let rootStack = UIStackView(arrangedSubviews: [hStack, vStack])
+        let reloadButton = UIButton(type: .system)
+        reloadButton.setTitle("Shuffle", for: .normal)
+        reloadButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        reloadButton.addTarget(self, action: #selector(reloadData), for: .touchUpInside)
+
+        let addButton = UIButton(type: .system)
+        addButton.setTitle("Random", for: .normal)
+        addButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        addButton.addTarget(self, action: #selector(addItem), for: .touchUpInside)
+
+        let buttonStack = UIStackView(arrangedSubviews: [reloadButton, addButton])
+        buttonStack.axis = .horizontal
+        buttonStack.spacing = 16
+        buttonStack.distribution = .fillEqually
+
+        let rootStack = UIStackView(arrangedSubviews: [hStack, vStack, buttonStack])
         rootStack.axis = .vertical
         rootStack.spacing = 24
         rootStack.translatesAutoresizingMaskIntoConstraints = false
@@ -104,6 +119,39 @@ class ViewController: UIViewController {
             verticalScrollView.heightAnchor.constraint(equalToConstant: 300),
         ])
         
+    }
+
+    @objc private func reloadData() {
+        horizontalColors.shuffle()
+        verticalColors.shuffle()
+        horizontalScrollView.reloadData()
+        verticalScrollView.reloadData()
+    }
+
+    @objc private func addItem() {
+        let allColors: [UIColor] = [
+            .systemRed, .systemBlue, .systemGreen, .systemOrange, .systemPurple,
+            .systemTeal, .systemPink, .systemYellow, .systemIndigo, .systemMint,
+            .systemBrown, .systemCyan, .systemGray
+        ]
+        horizontalColors = allColors.randomElements(minCount: 3)
+        verticalColors = allColors.randomElements(minCount: 3)
+        horizontalScrollView.reloadData()
+        verticalScrollView.reloadData()
+
+        (view.viewWithTag(100) as? UIPageControl)?.numberOfPages = horizontalColors.count
+        (view.viewWithTag(200) as? UIPageControl)?.numberOfPages = verticalColors.count
+        (view.viewWithTag(100) as? UIPageControl)?.currentPage = min(horizontalScrollView.currentIndex, horizontalColors.count-1)
+        (view.viewWithTag(200) as? UIPageControl)?.currentPage = min(verticalScrollView.currentIndex, verticalColors.count-1)
+    }
+}
+
+extension Array {
+    func randomElements(minCount: Int = 3) -> [Element] {
+        guard !isEmpty else { return [] }
+        guard self.count >= minCount else { return self }
+        let randomCount = Int.random(in: minCount...self.count)
+        return Array(self.shuffled().prefix(randomCount))
     }
 }
 
@@ -163,24 +211,12 @@ extension ViewController: LCInfiniteScrollViewDelegate {
         print("\(direction) item tapped at index: \(index)")
     }
 
-    func infiniteScrollViewDidScroll(_ infiniteScrollView: LCInfiniteScrollView) {
+    func infiniteScrollView(_ infiniteScrollView: LCInfiniteScrollView, willDisplay cell: UICollectionViewCell, forItemAt index: Int) {
         let tag = infiniteScrollView === horizontalScrollView ? 100 : 200
         guard let indicator = view.viewWithTag(tag) as? UIPageControl else { return }
-        indicator.currentPage = infiniteScrollView.currentIndex
+        indicator.currentPage = index
     }
-
-    func infiniteScrollViewDidEndScrollAnimation(_ infiniteScrollView: LCInfiniteScrollView) {
-        let tag = infiniteScrollView === horizontalScrollView ? 100 : 200
-        guard let indicator = view.viewWithTag(tag) as? UIPageControl else { return }
-        indicator.currentPage = infiniteScrollView.currentIndex
-    }
-
-    func infiniteScrollViewDidEndDecelerating(_ infiniteScrollView: LCInfiniteScrollView) {
-        let tag = infiniteScrollView === horizontalScrollView ? 100 : 200
-        guard let indicator = view.viewWithTag(tag) as? UIPageControl else { return }
-        indicator.currentPage = infiniteScrollView.currentIndex
-    }
-    
+   
     func infiniteScrollView(_ infiniteScrollView: LCInfiniteScrollView, didHighlightItemAt index: Int) {
         let direction = infiniteScrollView === horizontalScrollView ? "Horizontal" : "Vertical"
         print("\(direction) didHighlightItemAt index: \(index)")
