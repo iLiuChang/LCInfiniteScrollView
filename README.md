@@ -95,7 +95,7 @@ extension ViewController: LCInfiniteScrollViewDelegate {
 | `scrollDirection` | `.horizontal` or `.vertical` |
 | `autoScrollTimeInterval` | Auto-scroll interval in seconds. `0` disables auto-scroll. |
 | `interitemSpacing` | Spacing between adjacent items. |
-| `disableInfiniteScrollForSingleItem` | When `true`, a single item won't loop infinitely. |
+| `disableInfiniteLoopForSingleItem` | When `true`, a single item won't loop infinitely. |
 | `currentIndex` | The currently visible page index (KVO observable). |
 | `scrollOffset` | Normalized scroll offset modulo item count. |
 | `reloadData()` | Reloads all items. |

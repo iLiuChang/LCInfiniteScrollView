@@ -81,7 +81,7 @@ open class LCInfiniteScrollView: UIView {
         set { collectionViewLayout.interitemSpacing = newValue }
     }
         
-    @objc open var disableInfiniteScrollForSingleItem: Bool = false
+    @objc open var disableInfiniteLoopForSingleItem: Bool = false
     
     @objc open var scrollOffset: CGFloat {
         let contentOffset = self.scrollDirection == .horizontal ? self.collectionView.contentOffset.x : self.collectionView.contentOffset.y
@@ -280,7 +280,7 @@ extension LCInfiniteScrollView: UICollectionViewDataSource,UICollectionViewDeleg
         guard self.numberOfItems > 0 else {
             return 0
         }
-        self.numberOfSections = (self.numberOfItems > 1 || !self.disableInfiniteScrollForSingleItem) ? Int(Int16.max)/self.numberOfItems : 1
+        self.numberOfSections = (self.numberOfItems > 1 || !self.disableInfiniteLoopForSingleItem) ? Int(Int16.max)/self.numberOfItems : 1
         return self.numberOfSections
     }
     
