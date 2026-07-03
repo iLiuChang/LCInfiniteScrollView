@@ -296,27 +296,27 @@ extension LCInfiniteScrollView: UICollectionViewDataSource,UICollectionViewDeleg
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        self.delegate?.infiniteScrollView?(self, shouldHighlightItemAt: indexPath.item % self.numberOfItems) ?? true
+        self.delegate?.infiniteScrollView?(self, shouldHighlightItemAt: indexPath.item) ?? true
     }
     
     public func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
-        self.delegate?.infiniteScrollView?(self, didHighlightItemAt: indexPath.item % self.numberOfItems)
+        self.delegate?.infiniteScrollView?(self, didHighlightItemAt: indexPath.item)
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        self.delegate?.infiniteScrollView?(self, shouldSelectItemAt: indexPath.item % self.numberOfItems) ?? true
+        self.delegate?.infiniteScrollView?(self, shouldSelectItemAt: indexPath.item) ?? true
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.delegate?.infiniteScrollView?(self, didSelectItemAt: indexPath.item % self.numberOfItems)
+        self.delegate?.infiniteScrollView?(self, didSelectItemAt: indexPath.item)
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        self.delegate?.infiniteScrollView?(self, willDisplay: cell, forItemAt: indexPath.item % self.numberOfItems)
+        self.delegate?.infiniteScrollView?(self, willDisplay: cell, forItemAt: indexPath.item)
     }
     
     public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        self.delegate?.infiniteScrollView?(self, didEndDisplaying: cell, forItemAt: indexPath.item % self.numberOfItems)
+        self.delegate?.infiniteScrollView?(self, didEndDisplaying: cell, forItemAt: indexPath.item)
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
