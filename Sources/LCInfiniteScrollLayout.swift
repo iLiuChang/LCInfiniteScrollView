@@ -36,6 +36,8 @@ open class LCInfiniteScrollLayout: UICollectionViewLayout {
             return
         }
         
+        let oldItemInteritemSize = self.itemInteritemSize
+        
         self.collectionViewSize = collectionView.frame.size
         self.numberOfSections = numberOfSections
         self.numberOfItems = numberOfItems
@@ -51,8 +53,14 @@ open class LCInfiniteScrollLayout: UICollectionViewLayout {
             self.contentSize = CGSize(width: self.collectionViewSize.width, height: contentLength)
         }
         
-        let currentIndex = collectionView.indexPathsForVisibleItems.first?.item ?? 0
-        let newIndexPath = IndexPath(item: currentIndex, section: self.numberOfSections / 2)
+        let itemIndex: Int
+        if self.numberOfItems > 0 && oldItemInteritemSize > 0 {
+            let offset = self.scrollDirection == .horizontal ? collectionView.contentOffset.x : collectionView.contentOffset.y
+            itemIndex = max(0, lround(Double(offset / oldItemInteritemSize)) % self.numberOfItems)
+        } else {
+            itemIndex = 0
+        }
+        let newIndexPath = IndexPath(item: itemIndex, section: self.numberOfSections / 2)
         let offset = self.contentOffset(for: newIndexPath)
         collectionView.bounds = CGRect(origin: offset, size: collectionView.frame.size)
     }
