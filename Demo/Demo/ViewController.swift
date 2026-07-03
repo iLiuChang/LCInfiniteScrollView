@@ -143,8 +143,6 @@ class ViewController: UIViewController {
 
         (view.viewWithTag(100) as? UIPageControl)?.numberOfPages = horizontalColors.count
         (view.viewWithTag(200) as? UIPageControl)?.numberOfPages = verticalColors.count
-        (view.viewWithTag(100) as? UIPageControl)?.currentPage = min(horizontalScrollView.currentIndex, horizontalColors.count-1)
-        (view.viewWithTag(200) as? UIPageControl)?.currentPage = min(verticalScrollView.currentIndex, verticalColors.count-1)
     }
 }
 

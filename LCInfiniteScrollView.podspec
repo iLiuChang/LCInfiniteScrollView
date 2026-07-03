@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
   s.name         = "LCInfiniteScrollView"
   s.version      = "2.0.0"
-  s.summary      = "An infinite scrolling control that supports horizontal or vertical directions."
+  s.summary      = "An infinitely scrolling pagination control."
   s.homepage     = "https://github.com/iLiuChang/LCInfiniteScrollView"
   s.license      = "MIT"
   s.authors      = { "liuchang" => "iliuchang@foxmail.com" }
