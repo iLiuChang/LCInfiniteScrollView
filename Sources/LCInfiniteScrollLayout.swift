@@ -7,12 +7,6 @@
 
 import UIKit
 
-@objc
-public protocol LCInfiniteScrollLayoutDataSource: NSObjectProtocol {
-    @objc(currentIndexInInfiniteScrollLayout:)
-    func currentIndex(in infiniteScrollLayout: LCInfiniteScrollLayout) -> Int
-}
-
 open class LCInfiniteScrollLayout: UICollectionViewLayout {
     
     @objc public enum ScrollDirection: Int {
@@ -20,7 +14,6 @@ open class LCInfiniteScrollLayout: UICollectionViewLayout {
         case vertical
     }
 
-    @objc open weak var dataSource: LCInfiniteScrollLayoutDataSource?
     @objc open var scrollDirection: ScrollDirection = .horizontal
     @objc open var interitemSpacing: CGFloat = 0
     /// (horizontal: width or vertical: height) + interitemSpacing
@@ -35,14 +28,17 @@ open class LCInfiniteScrollLayout: UICollectionViewLayout {
         guard let collectionView = self.collectionView else {
             return
         }
-        
-        guard self.collectionViewSize != collectionView.frame.size else {
+        let numberOfSections = collectionView.numberOfSections
+        let numberOfItems = collectionView.numberOfItems(inSection: 0)
+        guard self.collectionViewSize != collectionView.frame.size ||
+        self.numberOfSections != numberOfSections ||
+        self.numberOfItems != numberOfItems else {
             return
         }
         
         self.collectionViewSize = collectionView.frame.size
-        self.numberOfSections = collectionView.numberOfSections
-        self.numberOfItems = collectionView.numberOfItems(inSection: 0)
+        self.numberOfSections = numberOfSections
+        self.numberOfItems = numberOfItems
         
         self.itemInteritemSize = (self.scrollDirection == .horizontal ? self.collectionViewSize.width : self.collectionViewSize.height) + self.interitemSpacing
         
@@ -55,7 +51,7 @@ open class LCInfiniteScrollLayout: UICollectionViewLayout {
             self.contentSize = CGSize(width: self.collectionViewSize.width, height: contentLength)
         }
         
-        let currentIndex = dataSource?.currentIndex(in: self) ?? 0
+        let currentIndex = collectionView.indexPathsForVisibleItems.first?.item ?? 0
         let newIndexPath = IndexPath(item: currentIndex, section: self.numberOfSections / 2)
         let offset = self.contentOffset(for: newIndexPath)
         collectionView.bounds = CGRect(origin: offset, size: collectionView.frame.size)

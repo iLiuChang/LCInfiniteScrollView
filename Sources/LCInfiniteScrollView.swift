@@ -198,7 +198,6 @@ open class LCInfiniteScrollView: UIView {
     }
     
     private func commonInit() {
-        collectionViewLayout.dataSource = self
         let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: collectionViewLayout)
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -271,12 +270,6 @@ open class LCInfiniteScrollView: UIView {
     }
 }
 
-extension LCInfiniteScrollView: LCInfiniteScrollLayoutDataSource {
-    public func currentIndex(in infiniteScrollLayout: LCInfiniteScrollLayout) -> Int {
-        currentIndex
-    }
-}
-
 extension LCInfiniteScrollView: UICollectionViewDataSource,UICollectionViewDelegate {
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -285,7 +278,7 @@ extension LCInfiniteScrollView: UICollectionViewDataSource,UICollectionViewDeleg
         }
         self.numberOfItems = dataSource.numberOfItems(in: self)
         guard self.numberOfItems > 0 else {
-            return 0;
+            return 0
         }
         self.numberOfSections = (self.numberOfItems > 1 || !self.disableInfiniteScrollForSingleItem) ? Int(Int16.max)/self.numberOfItems : 1
         return self.numberOfSections
