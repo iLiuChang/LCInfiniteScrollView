@@ -92,11 +92,13 @@ class ViewController: UIViewController {
 
         let reloadButton = UIButton(type: .system)
         reloadButton.setTitle("Shuffle", for: .normal)
+        reloadButton.setTitleColor(.blue.withAlphaComponent(0.7), for: .normal)
         reloadButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
         reloadButton.addTarget(self, action: #selector(reloadData), for: .touchUpInside)
 
         let addButton = UIButton(type: .system)
         addButton.setTitle("Random", for: .normal)
+        addButton.setTitleColor(.blue.withAlphaComponent(0.7), for: .normal)
         addButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
         addButton.addTarget(self, action: #selector(addItem), for: .touchUpInside)
 
