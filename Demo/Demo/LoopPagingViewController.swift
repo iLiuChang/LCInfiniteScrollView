@@ -20,6 +20,7 @@ class LoopPagingViewController: UIViewController {
     }()
 
     private let pageControl = UIPageControl()
+    private let directionButton = UIButton(type: .system)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,11 +42,10 @@ class LoopPagingViewController: UIViewController {
         pagingStack.axis = .vertical
         pagingStack.spacing = 8
 
-        let shuffleButton = UIButton(type: .system)
-        shuffleButton.setTitle("Shuffle", for: .normal)
-        shuffleButton.setTitleColor(.blue.withAlphaComponent(0.7), for: .normal)
-        shuffleButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
-        shuffleButton.addTarget(self, action: #selector(shuffleData), for: .touchUpInside)
+        directionButton.setTitle("Horizontal", for: .normal)
+        directionButton.setTitleColor(.blue.withAlphaComponent(0.7), for: .normal)
+        directionButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        directionButton.addTarget(self, action: #selector(toggleDirection), for: .touchUpInside)
 
         let randomButton = UIButton(type: .system)
         randomButton.setTitle("Random", for: .normal)
@@ -53,7 +53,7 @@ class LoopPagingViewController: UIViewController {
         randomButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
         randomButton.addTarget(self, action: #selector(randomData), for: .touchUpInside)
 
-        let buttonStack = UIStackView(arrangedSubviews: [shuffleButton, randomButton])
+        let buttonStack = UIStackView(arrangedSubviews: [directionButton, randomButton])
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
         buttonStack.distribution = .fillEqually
@@ -72,9 +72,10 @@ class LoopPagingViewController: UIViewController {
         ])
     }
 
-    @objc private func shuffleData() {
-        colors.shuffle()
-        pagingView.reloadData()
+    @objc private func toggleDirection() {
+        let isVertical = pagingView.scrollDirection == .horizontal
+        pagingView.scrollDirection = isVertical ? .vertical : .horizontal
+        directionButton.setTitle(isVertical ? "Vertical" : "Horizontal", for: .normal)
     }
 
     @objc private func randomData() {

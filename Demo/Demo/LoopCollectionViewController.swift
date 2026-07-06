@@ -21,6 +21,8 @@ class LoopCollectionViewController: UIViewController {
     }()
 
     private let modeLabel = UILabel()
+    private let toggleButton = UIButton(type: .system)
+    private let directionButton = UIButton(type: .system)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,17 +41,15 @@ class LoopCollectionViewController: UIViewController {
         stack.axis = .vertical
         stack.spacing = 8
 
-        let toggleButton = UIButton(type: .system)
         toggleButton.setTitle("Pagination", for: .normal)
         toggleButton.setTitleColor(.blue.withAlphaComponent(0.7), for: .normal)
         toggleButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
         toggleButton.addTarget(self, action: #selector(toggleLayout), for: .touchUpInside)
 
-        let shuffleButton = UIButton(type: .system)
-        shuffleButton.setTitle("Shuffle", for: .normal)
-        shuffleButton.setTitleColor(.blue.withAlphaComponent(0.7), for: .normal)
-        shuffleButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
-        shuffleButton.addTarget(self, action: #selector(shuffleData), for: .touchUpInside)
+        directionButton.setTitle("Horizontal", for: .normal)
+        directionButton.setTitleColor(.blue.withAlphaComponent(0.7), for: .normal)
+        directionButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        directionButton.addTarget(self, action: #selector(toggleDirection), for: .touchUpInside)
 
         let randomButton = UIButton(type: .system)
         randomButton.setTitle("Random", for: .normal)
@@ -57,7 +57,7 @@ class LoopCollectionViewController: UIViewController {
         randomButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
         randomButton.addTarget(self, action: #selector(randomData), for: .touchUpInside)
 
-        let buttonStack = UIStackView(arrangedSubviews: [toggleButton, shuffleButton, randomButton])
+        let buttonStack = UIStackView(arrangedSubviews: [toggleButton, directionButton, randomButton])
         buttonStack.axis = .horizontal
         buttonStack.spacing = 16
         buttonStack.distribution = .fillEqually
@@ -81,16 +81,18 @@ class LoopCollectionViewController: UIViewController {
         if isPagination {
             loopView.itemSize = 0
             modeLabel.text = "Pagination"
+            toggleButton.setTitle("Carousel", for: .normal)
         } else {
             loopView.itemSize = 120
             modeLabel.text = "Carousel (size: 120, spacing: 12)"
+            toggleButton.setTitle("Pagination", for: .normal)
         }
-
     }
 
-    @objc private func shuffleData() {
-        colors.shuffle()
-        loopView.reloadData()
+    @objc private func toggleDirection() {
+        let isVertical = loopView.scrollDirection == .horizontal
+        loopView.scrollDirection = isVertical ? .vertical : .horizontal
+        directionButton.setTitle(isVertical ? "Vertical" : "Horizontal", for: .normal)
     }
 
     @objc private func randomData() {
