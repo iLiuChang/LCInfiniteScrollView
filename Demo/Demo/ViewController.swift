@@ -4,7 +4,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "LCInfiniteScrollView"
+        title = "LoopScroll"
         view.backgroundColor = .systemBackground
         setupUI()
     }

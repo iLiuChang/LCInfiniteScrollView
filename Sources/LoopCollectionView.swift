@@ -21,15 +21,6 @@ public protocol LoopCollectionViewDataSource: NSObjectProtocol {
 @objc
 public protocol LoopCollectionViewDelegate: NSObjectProtocol {
     
-    @objc(loopCollectionView:shouldHighlightItemAtIndex:)
-    optional func loopCollectionView(_ loopCollectionView: LoopCollectionView, shouldHighlightItemAt index: Int) -> Bool
-    
-    @objc(loopCollectionView:didHighlightItemAtIndex:)
-    optional func loopCollectionView(_ loopCollectionView: LoopCollectionView, didHighlightItemAt index: Int)
-    
-    @objc(loopCollectionView:shouldSelectItemAtIndex:)
-    optional func loopCollectionView(_ loopCollectionView: LoopCollectionView, shouldSelectItemAt index: Int) -> Bool
-    
     @objc(loopCollectionView:didSelectItemAtIndex:)
     optional func loopCollectionView(_ loopCollectionView: LoopCollectionView, didSelectItemAt index: Int)
     
@@ -180,15 +171,8 @@ open class LoopCollectionView: UIView {
             collectionViewSize = frame.size
             reloadLayoutAndData()
             if itemSize <= 0 {
-                switch self.scrollDirection {
-                case .vertical:
-                    let currentPage = round(collectionView.contentOffset.y / collectionViewBoundsSize)
-                    let targetOffset = CGPoint(x: 0, y: currentPage * collectionViewBoundsSize)
-                    collectionView.setContentOffset(targetOffset, animated: false)
-                default:
-                    let currentPage = round(collectionView.contentOffset.x / collectionViewBoundsSize)
-                    let targetOffset = CGPoint(x: currentPage * collectionViewBoundsSize, y: 0)
-                    collectionView.setContentOffset(targetOffset, animated: false)
+                DispatchQueue.main.async {
+                    self.adjustedContentOffset()
                 }
             }
         }
@@ -219,39 +203,6 @@ open class LoopCollectionView: UIView {
         let indexPath = IndexPath(item: bIndex, section: 0)
         let scrollPosition: UICollectionView.ScrollPosition = scrollDirection == .horizontal ? .left : .top
         collectionView.scrollToItem(at: indexPath, at: scrollPosition, animated: animated)
-    }
-
-    @objc(selectItemAtIndex:animated:)
-    open func selectItem(at index: Int, animated: Bool) {
-        guard self.numberOfItems > 0, index >= 0 else { return }
-        let bIndex = boundaryIndex(forOriginalIndex: index)
-        let indexPath = IndexPath(item: bIndex, section: 0)
-        let scrollPosition: UICollectionView.ScrollPosition = self.scrollDirection == .horizontal ? .centeredHorizontally : .centeredVertically
-        self.collectionView.selectItem(at: indexPath, animated: animated, scrollPosition: scrollPosition)
-    }
-    
-    @objc(deselectItemAtIndex:animated:)
-    open func deselectItem(at index: Int, animated: Bool) {
-        guard self.numberOfItems > 0, index >= 0 else { return }
-        let bIndex = boundaryIndex(forOriginalIndex: index)
-        let indexPath = IndexPath(item: bIndex, section: 0)
-        self.collectionView.deselectItem(at: indexPath, animated: animated)
-    }
-
-    @objc(cellForItemAtIndex:)
-    open func cellForItem(at index: Int) -> UICollectionViewCell? {
-        guard self.numberOfItems > 0, index >= 0 else { return nil }
-        let bIndex = boundaryIndex(forOriginalIndex: index)
-        let indexPath = IndexPath(item: bIndex, section: 0)
-        return self.collectionView.cellForItem(at: indexPath)
-    }
-
-    @objc(indexForCell:)
-    open func index(for cell: UICollectionViewCell) -> Int {
-        guard let indexPath = self.collectionView.indexPath(for: cell) else {
-            return NSNotFound
-        }
-        return originalIndex(forBoundaryIndex: indexPath.item)
     }
 
     @objc(reloadData)
@@ -309,6 +260,18 @@ extension LoopCollectionView {
         }
     }
     
+    private func adjustedContentOffset() {
+        switch self.scrollDirection {
+        case .vertical:
+            let currentPage = round(collectionView.contentOffset.y / collectionViewBoundsSize)
+            let targetOffset = CGPoint(x: 0, y: currentPage * collectionViewBoundsSize)
+            collectionView.setContentOffset(targetOffset, animated: false)
+        default:
+            let currentPage = round(collectionView.contentOffset.x / collectionViewBoundsSize)
+            let targetOffset = CGPoint(x: currentPage * collectionViewBoundsSize, y: 0)
+            collectionView.setContentOffset(targetOffset, animated: false)
+        }
+    }
     // MARK: - Index Mapping
 
     private func originalIndex(forBoundaryIndex index: Int) -> Int {
@@ -355,18 +318,11 @@ extension LoopCollectionView: UICollectionViewDelegateFlowLayout {
     }
 
     public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        let idx = originalIndex(forBoundaryIndex: indexPath.item)
-        return delegate?.loopCollectionView?(self, shouldHighlightItemAt: idx) ?? true
-    }
-
-    public func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
-        let idx = originalIndex(forBoundaryIndex: indexPath.item)
-        delegate?.loopCollectionView?(self, didHighlightItemAt: idx)
+        return true
     }
 
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        let idx = originalIndex(forBoundaryIndex: indexPath.item)
-        return delegate?.loopCollectionView?(self, shouldSelectItemAt: idx) ?? true
+        return true
     }
 
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
