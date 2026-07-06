@@ -88,8 +88,7 @@ open class LoopCollectionView: UIView {
                 guard numberOfItems > 0 && collectionViewBoundsSize > 0 else {
                     return
                 }
-                configureBoundary()
-                collectionViewLayout.invalidateLayout()
+                reloadLayoutAndData()
                 scrollToFirstItem()
             }
         }
@@ -103,9 +102,7 @@ open class LoopCollectionView: UIView {
                 guard numberOfItems > 0 && collectionViewBoundsSize > 0 else {
                     return
                 }
-                configureCellLayout()
-                configureBoundary()
-                collectionView.reloadData()
+                reloadLayoutAndData()
                 if isPagingEnabled != collectionView.isPagingEnabled {
                     scrollToFirstItem()
                 }
@@ -113,7 +110,16 @@ open class LoopCollectionView: UIView {
         }
     }
 
-    @objc open var itemSpacing: CGFloat = 0
+    @objc open var itemSpacing: CGFloat = 0 {
+        didSet {
+            if itemSize != oldValue {
+                guard numberOfItems > 0 && collectionViewBoundsSize > 0 else {
+                    return
+                }
+                reloadLayoutAndData()
+            }
+        }
+    }
 
     @objc open var panGestureRecognizer: UIPanGestureRecognizer {
         return self.collectionView.panGestureRecognizer
@@ -172,9 +178,7 @@ open class LoopCollectionView: UIView {
         super.layoutSubviews()
         if collectionViewSize != frame.size {
             collectionViewSize = frame.size
-            configureCellLayout()
-            configureBoundary()
-            collectionViewLayout.invalidateLayout()
+            reloadLayoutAndData()
             if itemSize <= 0 {
                 switch self.scrollDirection {
                 case .vertical:
@@ -186,7 +190,6 @@ open class LoopCollectionView: UIView {
                     let targetOffset = CGPoint(x: currentPage * collectionViewBoundsSize, y: 0)
                     collectionView.setContentOffset(targetOffset, animated: false)
                 }
-
             }
         }
     }
@@ -255,12 +258,9 @@ open class LoopCollectionView: UIView {
     open func reloadData() {
         let oldNumberOfItems = numberOfItems
         self.numberOfItems = dataSource?.numberOfItems(in: self) ?? 0
-        configureBoundary()
         collectionView.reloadData()
         if (oldNumberOfItems == 0 && numberOfItems > 0) {
-            DispatchQueue.main.async {
-                self.scrollToItem(at: 0, animated: false)
-            }
+            scrollToFirstItem()
         }
     }
 }
@@ -293,6 +293,12 @@ extension LoopCollectionView {
         }
     }
 
+    private func reloadLayoutAndData() {
+        configureCellLayout()
+        configureBoundary()
+        collectionView.reloadData()
+    }
+    
     private func scrollToFirstItem() {
         guard numberOfItems > 0 else {
             return

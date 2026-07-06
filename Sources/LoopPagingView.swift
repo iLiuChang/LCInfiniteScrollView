@@ -7,7 +7,7 @@
 
 import UIKit
 
-@objcMembers
+@objc
 open class LoopPagingView: LoopCollectionView {
 
     @objc open var autoScrollTimeInterval: CGFloat = 0.0 {
@@ -23,6 +23,11 @@ open class LoopPagingView: LoopCollectionView {
         get { return 0 }
         set {}
     }
+    
+    open override var itemSpacing: CGFloat {
+        get { return 0 }
+        set {}
+    }
 
     open override func willMove(toWindow newWindow: UIWindow?) {
         super.willMove(toWindow: newWindow)
@@ -32,6 +37,7 @@ open class LoopPagingView: LoopCollectionView {
             self.cancelTimer()
         }
     }
+    
     private var timer: Timer?
 
     @objc(startTimer)
@@ -54,7 +60,7 @@ open class LoopPagingView: LoopCollectionView {
         self.timer = nil
     }
 
-    @objc private func autoScrollToNextPage() {
+    private func autoScrollToNextPage() {
         switch self.scrollDirection {
         case .vertical:
             let currentPage = round(self.collectionView.contentOffset.y / self.collectionViewBoundsSize)
