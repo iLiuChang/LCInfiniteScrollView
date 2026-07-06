@@ -12,7 +12,8 @@ class LoopCollectionViewController: UIViewController {
     private lazy var loopView: LoopCollectionView = {
         let v = LoopCollectionView()
         v.scrollDirection = .horizontal
-        v.cellLayout = LCInfiniteScrollCellLayout(size: 120, spacing: 12)
+        v.itemSize = 120
+        v.itemSpacing = 12
         v.dataSource = self
         v.delegate = self
         v.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
@@ -78,13 +79,12 @@ class LoopCollectionViewController: UIViewController {
     @objc private func toggleLayout() {
         isPagination.toggle()
         if isPagination {
-            loopView.cellLayout = .page
+            loopView.itemSize = 0
             modeLabel.text = "Pagination"
         } else {
-            loopView.cellLayout = LCInfiniteScrollCellLayout(size: 120, spacing: 12)
+            loopView.itemSize = 120
             modeLabel.text = "Carousel (size: 120, spacing: 12)"
         }
-        loopView.reloadData()
 
     }
 

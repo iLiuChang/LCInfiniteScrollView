@@ -74,22 +74,46 @@ public class LCInfiniteScrollCellLayout: NSObject {
 
 // MARK: - LoopCollectionView
 
-@objc open class LoopCollectionView: UIView {
+@objc
+open class LoopCollectionView: UIView {
 
     @objc open weak var dataSource: LoopCollectionViewDataSource?
     @objc open weak var delegate: LoopCollectionViewDelegate?
 
     /// Scroll direction. Default is .horizontal
-    @objc open var scrollDirection: UICollectionView.ScrollDirection {
-        get { collectionViewLayout.scrollDirection }
-        set { collectionViewLayout.scrollDirection = newValue}
-    }
-
-    @objc open var cellLayout: LCInfiniteScrollCellLayout = .page {
+    @objc open var scrollDirection: UICollectionView.ScrollDirection = .horizontal {
         didSet {
-            configureCellLayout()
+            if scrollDirection != oldValue {
+                collectionViewLayout.scrollDirection = scrollDirection
+                guard numberOfItems > 0 && collectionViewBoundsSize > 0 else {
+                    return
+                }
+                configureBoundary()
+                collectionViewLayout.invalidateLayout()
+                scrollToFirstItem()
+            }
         }
     }
+
+    @objc open var itemSize: CGFloat = 0 {
+        didSet {
+            if itemSize != oldValue {
+                let isPagingEnabled = collectionView.isPagingEnabled
+                collectionView.isPagingEnabled = itemSize <= 0
+                guard numberOfItems > 0 && collectionViewBoundsSize > 0 else {
+                    return
+                }
+                configureCellLayout()
+                configureBoundary()
+                collectionView.reloadData()
+                if isPagingEnabled != collectionView.isPagingEnabled {
+                    scrollToFirstItem()
+                }
+            }
+        }
+    }
+
+    @objc open var itemSpacing: CGFloat = 0
 
     @objc open var panGestureRecognizer: UIPanGestureRecognizer {
         return self.collectionView.panGestureRecognizer
@@ -98,7 +122,7 @@ public class LCInfiniteScrollCellLayout: NSObject {
     // MARK: - Private Properties
     private var numberOfItems: Int = 0
     private var cellSize: CGFloat = 0
-    private var interitemSpacing: CGFloat = 0
+    private var cellSpacing: CGFloat = 0
     private var numberOfBoundaryElements = 0
     private var totalItemsWithBoundary = 0
     private var collectionViewSize: CGSize = .zero
@@ -122,15 +146,17 @@ public class LCInfiniteScrollCellLayout: NSObject {
     }
 
     private func commonInit() {
-        collectionViewLayout.scrollDirection = .horizontal
+        collectionViewLayout.scrollDirection = scrollDirection
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = UIColor.clear
         collectionView.contentInset = .zero
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.contentInsetAdjustmentBehavior = .never
         collectionView.scrollsToTop = false
-
+        collectionView.isPagingEnabled = true
+        
         self.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -149,10 +175,18 @@ public class LCInfiniteScrollCellLayout: NSObject {
             configureCellLayout()
             configureBoundary()
             collectionViewLayout.invalidateLayout()
-            if cellLayout.size <= 0 {
-                let currentPage = round(collectionView.contentOffset.x / collectionViewBoundsSize)
-                let targetOffset = CGPoint(x: currentPage * collectionViewBoundsSize, y: 0)
-                collectionView.setContentOffset(targetOffset, animated: false)
+            if itemSize <= 0 {
+                switch self.scrollDirection {
+                case .vertical:
+                    let currentPage = round(collectionView.contentOffset.y / collectionViewBoundsSize)
+                    let targetOffset = CGPoint(x: 0, y: currentPage * collectionViewBoundsSize)
+                    collectionView.setContentOffset(targetOffset, animated: false)
+                default:
+                    let currentPage = round(collectionView.contentOffset.x / collectionViewBoundsSize)
+                    let targetOffset = CGPoint(x: currentPage * collectionViewBoundsSize, y: 0)
+                    collectionView.setContentOffset(targetOffset, animated: false)
+                }
+
             }
         }
     }
@@ -214,7 +248,7 @@ public class LCInfiniteScrollCellLayout: NSObject {
         guard let indexPath = self.collectionView.indexPath(for: cell) else {
             return NSNotFound
         }
-        return boundaryIndex(forOriginalIndex: indexPath.item)
+        return originalIndex(forBoundaryIndex: indexPath.item)
     }
 
     @objc(reloadData)
@@ -233,44 +267,42 @@ public class LCInfiniteScrollCellLayout: NSObject {
 
 extension LoopCollectionView {
     private func configureBoundary() {
-        guard numberOfItems > 0 else {
+        guard numberOfItems > 0, collectionViewBoundsSize > 0 else {
             numberOfBoundaryElements = 0
             totalItemsWithBoundary = 0
             return
         }
-        let absoluteNumberOfElementsOnScreen: CGFloat
         if cellSize > 0 {
-            absoluteNumberOfElementsOnScreen = ceil(collectionViewBoundsSize / cellSize)
+            numberOfBoundaryElements = lround(collectionViewBoundsSize / cellSize)
         } else {
-            absoluteNumberOfElementsOnScreen = ceil(collectionViewBoundsSize)
+            numberOfBoundaryElements = 1
         }
-        numberOfBoundaryElements = Int(absoluteNumberOfElementsOnScreen)
         totalItemsWithBoundary = numberOfItems + 2 * numberOfBoundaryElements
     }
 
     private func configureCellLayout() {
-        let isPagingEnabled = collectionView.isPagingEnabled
-
-        collectionView.isPagingEnabled = cellLayout.size <= 0
-
         guard collectionViewBoundsSize > 0 else {
             return
         }
-        if cellLayout.size > 0 {
-            cellSize = cellLayout.size
-            interitemSpacing = cellLayout.spacing
+        if itemSize > 0 {
+            cellSize = itemSize
+            cellSpacing = itemSpacing
         } else {
             cellSize = collectionViewBoundsSize
-            interitemSpacing = 0
+            cellSpacing = 0
         }
-        if isPagingEnabled != collectionView.isPagingEnabled {
-            DispatchQueue.main.async {
-                self.scrollToItem(at: 0, animated: false)
-            }
-        }
-
     }
 
+    private func scrollToFirstItem() {
+        guard numberOfItems > 0 else {
+            return
+        }
+
+        DispatchQueue.main.async {
+            self.scrollToItem(at: 0, animated: false)
+        }
+    }
+    
     // MARK: - Index Mapping
 
     private func originalIndex(forBoundaryIndex index: Int) -> Int {
@@ -295,11 +327,11 @@ extension LoopCollectionView {
 extension LoopCollectionView: UICollectionViewDelegateFlowLayout {
 
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return interitemSpacing
+        return cellSpacing
     }
 
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return interitemSpacing
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumcellSpacingForSectionAt section: Int) -> CGFloat {
+        return cellSpacing
     }
 
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -358,16 +390,16 @@ extension LoopCollectionView: UICollectionViewDelegateFlowLayout {
         delegate?.loopCollectionViewDidScroll?(self)
 
         guard numberOfItems > 0 else { return }
-        let boundarySize = CGFloat(numberOfBoundaryElements) * cellSize + (CGFloat(numberOfBoundaryElements) * interitemSpacing)
+        let boundarySize = CGFloat(numberOfBoundaryElements) * cellSize + (CGFloat(numberOfBoundaryElements) * cellSpacing)
         let contentOffsetValue = scrollDirection == .horizontal ? scrollView.contentOffset.x : scrollView.contentOffset.y
         let scrollViewContentSizeValue: CGFloat = scrollDirection == .vertical ? collectionView.contentSize.height : collectionView.contentSize.width
         if contentOffsetValue >= (scrollViewContentSizeValue - boundarySize) {
-            let offset = boundarySize - interitemSpacing
+            let offset = boundarySize - cellSpacing
             let updatedOffsetPoint = scrollDirection == .horizontal ?
                 CGPoint(x: offset, y: 0) : CGPoint(x: 0, y: offset)
             scrollView.contentOffset = updatedOffsetPoint
         } else if contentOffsetValue <= 0 {
-            let boundaryLessSize = CGFloat(numberOfItems) * cellSize + (CGFloat(numberOfItems) * interitemSpacing)
+            let boundaryLessSize = CGFloat(numberOfItems) * cellSize + (CGFloat(numberOfItems) * cellSpacing)
             let updatedOffsetPoint = scrollDirection == .horizontal ?
                 CGPoint(x: boundaryLessSize, y: 0) : CGPoint(x: 0, y: boundaryLessSize)
             scrollView.contentOffset = updatedOffsetPoint

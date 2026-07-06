@@ -19,8 +19,8 @@ open class LoopPagingView: LoopCollectionView {
         }
     }
 
-    open override var cellLayout: LCInfiniteScrollCellLayout {
-        get { .page }
+    open override var itemSize: CGFloat {
+        get { return 0 }
         set {}
     }
 
@@ -57,10 +57,10 @@ open class LoopPagingView: LoopCollectionView {
     @objc private func autoScrollToNextPage() {
         switch self.scrollDirection {
         case .vertical:
-            let currentPage = lround(self.collectionView.contentOffset.y / self.collectionViewBoundsSize)
+            let currentPage = round(self.collectionView.contentOffset.y / self.collectionViewBoundsSize)
             self.collectionView.setContentOffset(CGPoint(x: 0, y: CGFloat(currentPage+1)*self.collectionViewBoundsSize), animated: true)
         default:
-            let currentPage = lround(self.collectionView.contentOffset.x / self.collectionViewBoundsSize)
+            let currentPage = round(self.collectionView.contentOffset.x / self.collectionViewBoundsSize)
             self.collectionView.setContentOffset(CGPoint(x: CGFloat(currentPage+1)*self.collectionViewBoundsSize, y: 0), animated: true)
         }
     }
