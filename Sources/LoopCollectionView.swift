@@ -112,7 +112,7 @@ open class LoopCollectionView: UIView {
 
     @objc open var itemSpacing: CGFloat = 0 {
         didSet {
-            if itemSize != oldValue {
+            if itemSpacing != oldValue {
                 guard numberOfItems > 0 && collectionViewBoundsSize > 0 else {
                     return
                 }
@@ -336,7 +336,7 @@ extension LoopCollectionView: UICollectionViewDelegateFlowLayout {
         return cellSpacing
     }
 
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumcellSpacingForSectionAt section: Int) -> CGFloat {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return cellSpacing
     }
 
