@@ -258,8 +258,7 @@ open class LoopCollectionView: UIView {
     open func reloadData() {
         let oldNumberOfItems = numberOfItems
         self.numberOfItems = dataSource?.numberOfItems(in: self) ?? 0
-        configureBoundary()
-        collectionView.reloadData()
+        reloadLayoutAndData()
         if (oldNumberOfItems == 0 && numberOfItems > 0) {
             scrollToFirstItem()
         }
