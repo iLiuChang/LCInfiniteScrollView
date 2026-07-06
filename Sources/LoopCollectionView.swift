@@ -126,7 +126,7 @@ open class LoopCollectionView: UIView {
     }
 
     // MARK: - Private Properties
-    private var numberOfItems: Int = 0
+    internal var numberOfItems: Int = 0
     private var cellSize: CGFloat = 0
     private var cellSpacing: CGFloat = 0
     private var numberOfBoundaryElements = 0
@@ -258,6 +258,7 @@ open class LoopCollectionView: UIView {
     open func reloadData() {
         let oldNumberOfItems = numberOfItems
         self.numberOfItems = dataSource?.numberOfItems(in: self) ?? 0
+        configureBoundary()
         collectionView.reloadData()
         if (oldNumberOfItems == 0 && numberOfItems > 0) {
             scrollToFirstItem()

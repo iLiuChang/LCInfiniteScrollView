@@ -19,6 +19,8 @@ open class LoopPagingView: LoopCollectionView {
         }
     }
 
+    @objc open var disableLoopForSingleItem: Bool = false
+    
     open override var itemSize: CGFloat {
         get { return 0 }
         set {}
@@ -42,9 +44,16 @@ open class LoopPagingView: LoopCollectionView {
 
     @objc(startTimer)
     open func startTimer() {
-        guard self.autoScrollTimeInterval > 0 && self.timer == nil else {
+        guard self.autoScrollTimeInterval > 0,
+              self.timer == nil,
+              self.numberOfItems > 0 else {
             return
         }
+        
+        if disableLoopForSingleItem && numberOfItems == 1 {
+            return
+        }
+        
         self.timer = Timer.scheduledTimer(withTimeInterval: autoScrollTimeInterval, repeats: true) { [weak self] _ in
             self?.autoScrollToNextPage()
         }
@@ -60,6 +69,17 @@ open class LoopPagingView: LoopCollectionView {
         self.timer = nil
     }
 
+    open override func reloadData() {
+        super.reloadData()
+        if (disableLoopForSingleItem && numberOfItems == 1) || numberOfItems == 0 {
+            cancelTimer()
+            collectionView.isScrollEnabled = false
+        } else {
+            startTimer()
+            collectionView.isScrollEnabled = true
+        }
+    }
+    
     private func autoScrollToNextPage() {
         switch self.scrollDirection {
         case .vertical:
@@ -78,15 +98,15 @@ extension LoopPagingView {
 
     public override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         super.scrollViewWillBeginDragging(scrollView)
-        if self.autoScrollTimeInterval > 0 {
-            self.cancelTimer()
+        if autoScrollTimeInterval > 0 {
+            cancelTimer()
         }
     }
 
     public override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         super.scrollViewWillEndDragging(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
-        if self.autoScrollTimeInterval > 0 {
-            self.startTimer()
+        if autoScrollTimeInterval > 0 && numberOfItems > 0 {
+            startTimer()
         }
     }
 }

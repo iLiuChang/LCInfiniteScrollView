@@ -14,6 +14,7 @@ class LoopPagingViewController: UIViewController {
         v.autoScrollTimeInterval = 2.5
         v.dataSource = self
         v.delegate = self
+        v.disableLoopForSingleItem = true
         v.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
         return v
     }()
@@ -83,7 +84,6 @@ class LoopPagingViewController: UIViewController {
             .systemBrown, .systemCyan, .systemGray
         ]
         colors = allColors.randomElements(minCount: 3)
-        pageControl.numberOfPages = colors.count
         pagingView.reloadData()
     }
 }
@@ -93,7 +93,9 @@ class LoopPagingViewController: UIViewController {
 extension LoopPagingViewController: LoopCollectionViewDataSource {
 
     func numberOfItems(in loopCollectionView: LoopCollectionView) -> Int {
-        colors.count
+        let count = colors.count
+        pageControl.numberOfPages = colors.count
+        return count
     }
 
     func loopCollectionView(_ loopCollectionView: LoopCollectionView, cellForItemAt index: Int) -> UICollectionViewCell {
