@@ -2,14 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "LCInfiniteScrollView",
+    name: "LoopScroll",
     platforms: [.iOS(.v11)],
     products: [
-        .library(name: "LCInfiniteScrollView", targets: ["LCInfiniteScrollView"])
+        .library(name: "LoopScroll", targets: ["LoopScroll"])
     ],
     targets: [
         .target(
-            name: "LCInfiniteScrollView",
+            name: "LoopScroll",
             path: "Sources",
             resources: [.copy("PrivacyInfo.xcprivacy")]
         )

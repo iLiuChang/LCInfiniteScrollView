@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
   s.name         = "LoopScroll"
   s.version      = "2.0.0"
-  s.summary      = "An infinitely scrolling pagination control."
+  s.summary      = "An infinitely looping scrolling control implemented using UICollectionView."
   s.homepage     = "https://github.com/iLiuChang/LoopScroll"
   s.license      = "MIT"
   s.authors      = { "liuchang" => "iliuchang@foxmail.com" }
