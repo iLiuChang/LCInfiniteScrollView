@@ -20,7 +20,7 @@ open class LoopPagingView: LoopCollectionView {
     }
 
     open override var cellLayout: LCInfiniteScrollCellLayout {
-        get { .pagination }
+        get { .page }
         set {}
     }
 

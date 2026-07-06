@@ -78,7 +78,7 @@ class LoopCollectionViewController: UIViewController {
     @objc private func toggleLayout() {
         isPagination.toggle()
         if isPagination {
-            loopView.cellLayout = .pagination
+            loopView.cellLayout = .page
             modeLabel.text = "Pagination"
         } else {
             loopView.cellLayout = LCInfiniteScrollCellLayout(size: 120, spacing: 12)

@@ -60,7 +60,7 @@ public protocol LoopCollectionViewDelegate: NSObjectProtocol {
 
 @objcMembers
 public class LCInfiniteScrollCellLayout: NSObject {
-    public class var pagination: LCInfiniteScrollCellLayout {
+    public class var page: LCInfiniteScrollCellLayout {
         LCInfiniteScrollCellLayout(size: 0, spacing: 0)
     }
     public var size: CGFloat
@@ -85,7 +85,7 @@ public class LCInfiniteScrollCellLayout: NSObject {
         set { collectionViewLayout.scrollDirection = newValue}
     }
 
-    @objc open var cellLayout: LCInfiniteScrollCellLayout = .pagination {
+    @objc open var cellLayout: LCInfiniteScrollCellLayout = .page {
         didSet {
             configureCellLayout()
         }
