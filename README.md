@@ -118,10 +118,6 @@ extension ViewController: LoopCollectionViewDelegate {
 | `panGestureRecognizer` | The underlying `UIPanGestureRecognizer`. |
 | `reloadData()` | Reloads all items. |
 | `scrollToItem(at:animated:)` | Scrolls to a specific item. |
-| `selectItem(at:animated:)` | Programmatically selects an item. |
-| `deselectItem(at:animated:)` | Programmatically deselects an item. |
-| `cellForItem(at:)` | Returns the visible cell at the given index. |
-| `index(for:)` | Returns the logical index for a given cell. |
 | `register(_:forCellWithReuseIdentifier:)` | Registers a cell class or nib. |
 
 ### LoopPagingView (extends LoopCollectionView)
@@ -139,8 +135,6 @@ extension ViewController: LoopCollectionViewDelegate {
 
 | Method | Description |
 |---|---|
-| `shouldHighlightItemAt` | Whether the item should highlight on touch. |
-| `didHighlightItemAt` | Called when an item is highlighted. |
 | `shouldSelectItemAt` | Whether the item should be selected on tap. |
 | `didSelectItemAt` | Called when the user taps an item. |
 | `willDisplay:forItemAt` | Called before a cell becomes visible. |
