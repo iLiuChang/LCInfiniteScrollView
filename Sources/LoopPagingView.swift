@@ -7,7 +7,6 @@
 
 import UIKit
 
-@objc
 open class LoopPagingView: LoopCollectionView {
 
     /// Auto-scroll interval in seconds. 0 disables auto-scroll.

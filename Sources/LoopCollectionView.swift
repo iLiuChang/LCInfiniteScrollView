@@ -10,7 +10,7 @@ import UIKit
 @objc
 public protocol LoopCollectionViewDataSource: NSObjectProtocol {
     
-    @objc(numberOfItemsInInfiniteScrollView:)
+    @objc(numberOfItemsInLoopCollectionView:)
     func numberOfItems(in loopCollectionView: LoopCollectionView) -> Int
     
     @objc(loopCollectionView:cellForItemAtIndex:)
@@ -54,7 +54,6 @@ public protocol LoopCollectionViewDelegate: NSObjectProtocol {
 
 // MARK: - LoopCollectionView
 
-@objc
 open class LoopCollectionView: UIView {
 
     @objc open weak var dataSource: LoopCollectionViewDataSource?
@@ -190,7 +189,7 @@ open class LoopCollectionView: UIView {
     /// Scrolls to a specific item.
     @objc(scrollToItemAtIndex:animated:)
     open func scrollToItem(at index: Int, animated: Bool) {
-        guard self.numberOfItems > 0, index >= 0 else { return }
+        guard self.numberOfItems > 0, index >= 0, collectionViewBoundsSize > 0 else { return }
         let bIndex = boundaryIndex(forOriginalIndex: index)
         let indexPath = IndexPath(item: bIndex, section: 0)
         let scrollPosition: UICollectionView.ScrollPosition = scrollDirection == .horizontal ? .left : .top
