@@ -10,6 +10,7 @@ import UIKit
 @objc
 open class LoopPagingView: LoopCollectionView {
 
+    /// Auto-scroll interval in seconds. 0 disables auto-scroll.
     @objc open var autoScrollTimeInterval: CGFloat = 0.0 {
         didSet {
             self.cancelTimer()
@@ -19,6 +20,7 @@ open class LoopPagingView: LoopCollectionView {
         }
     }
 
+    /// When true, a single item won't loop and scrolling is disabled.
     @objc open var disableLoopForSingleItem: Bool = false
     
     open override var itemSize: CGFloat {

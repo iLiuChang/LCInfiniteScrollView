@@ -74,6 +74,7 @@ open class LoopCollectionView: UIView {
         }
     }
 
+    /// Custom item size along scroll axis. 0 uses full bounds (page mode).
     @objc open var itemSize: CGFloat = 0 {
         didSet {
             if itemSize != oldValue {
@@ -90,6 +91,7 @@ open class LoopCollectionView: UIView {
         }
     }
 
+    /// Spacing between adjacent items.
     @objc open var itemSpacing: CGFloat = 0 {
         didSet {
             if itemSpacing != oldValue {
@@ -185,6 +187,7 @@ open class LoopCollectionView: UIView {
         return collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
     }
 
+    /// Scrolls to a specific item.
     @objc(scrollToItemAtIndex:animated:)
     open func scrollToItem(at index: Int, animated: Bool) {
         guard self.numberOfItems > 0, index >= 0 else { return }
@@ -194,6 +197,7 @@ open class LoopCollectionView: UIView {
         collectionView.scrollToItem(at: indexPath, at: scrollPosition, animated: animated)
     }
 
+    /// Reloads all items.
     @objc(reloadData)
     open func reloadData() {
         let oldNumberOfItems = numberOfItems
