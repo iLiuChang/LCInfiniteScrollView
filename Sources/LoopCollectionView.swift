@@ -21,6 +21,9 @@ public protocol LoopCollectionViewDataSource: NSObjectProtocol {
 @objc
 public protocol LoopCollectionViewDelegate: NSObjectProtocol {
     
+    @objc(loopCollectionView:shouldSelectItemAtIndex:)
+    optional func loopCollectionView(_ loopCollectionView: LoopCollectionView, shouldSelectItemAt index: Int) -> Bool
+    
     @objc(loopCollectionView:didSelectItemAtIndex:)
     optional func loopCollectionView(_ loopCollectionView: LoopCollectionView, didSelectItemAt index: Int)
     
@@ -47,20 +50,6 @@ public protocol LoopCollectionViewDelegate: NSObjectProtocol {
     
     @objc(loopCollectionViewDidEndDragging:willDecelerate:)
     optional func loopCollectionViewDidEndDragging(_ loopCollectionView: LoopCollectionView, willDecelerate decelerate: Bool)
-}
-
-@objcMembers
-public class LCInfiniteScrollCellLayout: NSObject {
-    public class var page: LCInfiniteScrollCellLayout {
-        LCInfiniteScrollCellLayout(size: 0, spacing: 0)
-    }
-    public var size: CGFloat
-    public var spacing: CGFloat
-    
-    public init(size: CGFloat, spacing: CGFloat) {
-        self.size = size
-        self.spacing = spacing
-    }
 }
 
 // MARK: - LoopCollectionView
@@ -120,6 +109,7 @@ open class LoopCollectionView: UIView {
     internal var numberOfItems: Int = 0
     private var cellSize: CGFloat = 0
     private var cellSpacing: CGFloat = 0
+    private var currentPageIndexPath: IndexPath?
     private var numberOfBoundaryElements = 0
     private var totalItemsWithBoundary = 0
     private var collectionViewSize: CGSize = .zero
@@ -167,13 +157,12 @@ open class LoopCollectionView: UIView {
     
     override public func layoutSubviews() {
         super.layoutSubviews()
-        if collectionViewSize != frame.size {
+        if round(collectionViewSize.width) != round(frame.width) ||
+            round(collectionViewSize.height) != round(frame.height) {
             collectionViewSize = frame.size
             reloadLayoutAndData()
             if itemSize <= 0 {
-                DispatchQueue.main.async {
-                    self.adjustedContentOffset()
-                }
+                adjustedContentOffset()
             }
         }
     }
@@ -261,17 +250,14 @@ extension LoopCollectionView {
     }
     
     private func adjustedContentOffset() {
-        switch self.scrollDirection {
-        case .vertical:
-            let currentPage = round(collectionView.contentOffset.y / collectionViewBoundsSize)
-            let targetOffset = CGPoint(x: 0, y: currentPage * collectionViewBoundsSize)
-            collectionView.setContentOffset(targetOffset, animated: false)
-        default:
-            let currentPage = round(collectionView.contentOffset.x / collectionViewBoundsSize)
-            let targetOffset = CGPoint(x: currentPage * collectionViewBoundsSize, y: 0)
-            collectionView.setContentOffset(targetOffset, animated: false)
+        if let indexPath = currentPageIndexPath {
+            let scrollPosition: UICollectionView.ScrollPosition = scrollDirection == .horizontal ? .left : .top
+            DispatchQueue.main.async {
+                self.collectionView.scrollToItem(at: indexPath, at: scrollPosition, animated: false)
+            }
         }
     }
+    
     // MARK: - Index Mapping
 
     private func originalIndex(forBoundaryIndex index: Int) -> Int {
@@ -322,7 +308,8 @@ extension LoopCollectionView: UICollectionViewDelegateFlowLayout {
     }
 
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
+        let idx = originalIndex(forBoundaryIndex: indexPath.item)
+        return delegate?.loopCollectionView?(self, shouldSelectItemAt: idx) ?? true
     }
 
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -331,6 +318,7 @@ extension LoopCollectionView: UICollectionViewDelegateFlowLayout {
     }
 
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        currentPageIndexPath = indexPath
         let idx = originalIndex(forBoundaryIndex: indexPath.item)
         delegate?.loopCollectionView?(self, willDisplay: cell, forItemAt: idx)
     }
@@ -349,21 +337,21 @@ extension LoopCollectionView: UICollectionViewDelegateFlowLayout {
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        delegate?.loopCollectionViewDidScroll?(self)
+        defer {
+            delegate?.loopCollectionViewDidScroll?(self)
+        }
 
         guard numberOfItems > 0 else { return }
         let boundarySize = CGFloat(numberOfBoundaryElements) * cellSize + (CGFloat(numberOfBoundaryElements) * cellSpacing)
-        let contentOffsetValue = scrollDirection == .horizontal ? scrollView.contentOffset.x : scrollView.contentOffset.y
+        let contentOffsetValue = scrollDirection == .vertical ? scrollView.contentOffset.y : scrollView.contentOffset.x
         let scrollViewContentSizeValue: CGFloat = scrollDirection == .vertical ? collectionView.contentSize.height : collectionView.contentSize.width
         if contentOffsetValue >= (scrollViewContentSizeValue - boundarySize) {
             let offset = boundarySize - cellSpacing
-            let updatedOffsetPoint = scrollDirection == .horizontal ?
-                CGPoint(x: offset, y: 0) : CGPoint(x: 0, y: offset)
+            let updatedOffsetPoint = scrollDirection == .vertical ? CGPoint(x: 0, y: offset) : CGPoint(x: offset, y: 0)
             scrollView.contentOffset = updatedOffsetPoint
         } else if contentOffsetValue <= 0 {
             let boundaryLessSize = CGFloat(numberOfItems) * cellSize + (CGFloat(numberOfItems) * cellSpacing)
-            let updatedOffsetPoint = scrollDirection == .horizontal ?
-                CGPoint(x: boundaryLessSize, y: 0) : CGPoint(x: 0, y: boundaryLessSize)
+            let updatedOffsetPoint = scrollDirection == .vertical ? CGPoint(x: 0, y: boundaryLessSize) : CGPoint(x: boundaryLessSize, y: 0)
             scrollView.contentOffset = updatedOffsetPoint
         }
     }
