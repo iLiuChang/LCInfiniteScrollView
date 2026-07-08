@@ -189,7 +189,12 @@ open class LoopCollectionView: UIView {
     /// Scrolls to a specific item.
     @objc(scrollToItemAtIndex:animated:)
     open func scrollToItem(at index: Int, animated: Bool) {
-        guard self.numberOfItems > 0, index >= 0, collectionViewBoundsSize > 0 else { return }
+        guard numberOfItems > 0,
+              index >= 0,
+              index < numberOfItems,
+              collectionViewBoundsSize > 0 else {
+            return
+        }
         let bIndex = boundaryIndex(forOriginalIndex: index)
         let indexPath = IndexPath(item: bIndex, section: 0)
         let scrollPosition: UICollectionView.ScrollPosition = scrollDirection == .horizontal ? .left : .top
@@ -253,7 +258,7 @@ extension LoopCollectionView {
     }
     
     private func adjustedContentOffset() {
-        if let indexPath = currentPageIndexPath {
+        if let indexPath = currentPageIndexPath, indexPath.item < totalItemsWithBoundary {
             let scrollPosition: UICollectionView.ScrollPosition = scrollDirection == .horizontal ? .left : .top
             DispatchQueue.main.async {
                 self.collectionView.scrollToItem(at: indexPath, at: scrollPosition, animated: false)
