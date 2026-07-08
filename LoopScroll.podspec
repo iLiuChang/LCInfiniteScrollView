@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "LoopScroll"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "An infinitely looping scrolling control implemented using UICollectionView."
   s.homepage     = "https://github.com/iLiuChang/LoopScroll"
   s.license      = "MIT"
